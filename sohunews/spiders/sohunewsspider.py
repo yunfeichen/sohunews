@@ -12,11 +12,11 @@ from sohunews.items import SohunewsItem
 
 class sohunewsSpider(scrapy.Spider):
     name = "sohunews"
-    host = "http://hr.tencent.com"
+    host = "http://www.sohu.com/"
     # 这个例子中只指定了一个页面作为爬取的起始url
     # 当然从数据库或者文件或者什么其他地方读取起始url也是可以的
     start_urls = [
-        "http://hr.tencent.com/position.php?@start=0&start=0#a",
+        "http://www.sohu.com/",
     ]
 
     # 爬虫的入口，可以在此进行一些初始化工作，比如从某个文件或者数据库读入起始url
@@ -41,9 +41,9 @@ class sohunewsSpider(scrapy.Spider):
     def parse_content(self, response):
         item = response.meta['item']
         selector = Selector(response)
-        cdate = selector.xpath("//div[@class='time-source']/div[@class='time']/text()").extract()[0]
-        csourcename = selector.xpath("//span[@itemprop='name']/text()").extract()[0]
-        csourceurl = selector.xpath("//span[@id='isBasedOnUrl']/text()").extract()[0]
+        cdate = selector.xpath('//div[@class="text"]//div[@class="text-title"]/div[@class="article-info"]/span[1]/text()').extract()[0]
+        csourcename = selector.xpath('//div[@class="text"]//div[@class="text-title"]/div[@class="article-info"]/span[2]/a/text()').extract()[0]
+        csourceurl = selector.xpath('//div[@class="text"]//div[@class="text-title"]/div[@class="article-info"]/span[2]/a/@href').extract()[0]
         item['cdate'] = cdate
         item['csourcename'] = csourcename
         item['csourceurl'] = csourceurl
